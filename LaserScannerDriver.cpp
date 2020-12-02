@@ -80,12 +80,7 @@ double Scan::operator[](int n) const {
 }
 
 
-double Scan::get_angle_resolution() const {
-    return angle_resolution;
-}
-
-
-Scan &LaserScannerDriver::get_last_scan() const {
+Scan LaserScannerDriver::get_last_scan() const {
     return buffer[decrement(tail)];
 }
 
@@ -112,16 +107,65 @@ ostream &operator<<(ostream &os, const Scan &scan) {
 }
 
 
-double Scan::get_distance_from_angle(const double angle) const {
+double Scan::get_distance_from_angle(double angle) const {
     int min = 0;
     for (int i = 0; i < length; ++i)
-        if (abs(angle - i * angle_resolution) < abs(angle -  min * angle_resolution))
+        if (abs(angle - i * angle_resolution) < abs(angle - min * angle_resolution))
             min = i;
 
     return scan[min];
 }
 
 
-double LaserScannerDriver::get_distance(const double angle) const {
+double LaserScannerDriver::get_distance(double angle) const {
     return get_last_scan().get_distance_from_angle(angle);
 }
+
+
+Scan::Scan(const Scan &s)
+        : length{s.length}, angle_resolution{s.angle_resolution}, scan{new double[s.length]} {
+    copy(s.scan, s.scan + s.length, scan);
+}
+
+
+Scan &Scan::operator=(const Scan &s) {
+    double *temp = new double[s.length];
+    copy(s.scan, s.scan + s.length, temp);
+    delete[] scan;
+    scan = temp;
+    length = s.length;
+    angle_resolution = s.angle_resolution;
+    return *this;
+}
+
+
+
+Scan::Scan(Scan &&s)
+        : length{s.length}, angle_resolution{s.angle_resolution}, scan{s.scan} {
+    s.length = 0;
+    s.angle_resolution = 0;
+    s.scan = nullptr;
+}
+
+Scan &Scan::operator=(Scan &&s) {
+    delete[] scan;
+    scan = s.scan;
+    length = s.length;
+    angle_resolution = s.angle_resolution;
+    s.scan = nullptr;
+    s.length = 0;
+    s.angle_resolution = 0;
+    return *this;
+}
+
+Scan::~Scan() {
+    delete[] scan;
+    scan = nullptr;
+    length = 0;
+    angle_resolution = 0;
+}
+
+
+
+
+
