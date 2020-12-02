@@ -12,12 +12,6 @@ LaserScannerDriver::LaserScannerDriver(double angleResolution)
     }
 }
 
-Scan::Scan(double AngleResolution) {
-    angle_resolution = AngleResolution;
-    length = floor(180 / AngleResolution) + 1;
-    scan = nullptr;
-}
-
 
 void LaserScannerDriver::new_scan(const vector<double> &v) {
     buffer[tail].insert_vector(v);
@@ -139,7 +133,6 @@ Scan &Scan::operator=(const Scan &s) {
 }
 
 
-
 Scan::Scan(Scan &&s)
         : length{s.length}, angle_resolution{s.angle_resolution}, scan{s.scan} {
     s.length = 0;
@@ -166,6 +159,56 @@ Scan::~Scan() {
 }
 
 
+LaserScannerDriver::~LaserScannerDriver() {
+    delete[] buffer;
+    buffer = nullptr;
+    head = 0;
+    tail = 0;
+    size = 0;
+}
+
+LaserScannerDriver::LaserScannerDriver(const LaserScannerDriver &l)
+        : head{l.head}, tail{l.tail}, size{l.size}, buffer{new Scan[BUFFER_DIM]} {
+    for (int i = 0; i < BUFFER_DIM; ++i) {
+        buffer[i] = l.buffer[i];
+    }
+    //copy(l.buffer, l.buffer + BUFFER_DIM, buffer);
+}
+
+LaserScannerDriver &LaserScannerDriver::operator=(const LaserScannerDriver &l) {
+    Scan *temp = new Scan[BUFFER_DIM];
+    for (int i = 0; i < BUFFER_DIM; ++i) {
+        buffer[i] = l.buffer[i];
+    }
+    //copy(l.buffer, l.buffer + BUFFER_DIM, temp);
+    delete[] buffer;
+    buffer = temp;
+    head = l.head;
+    tail = l.tail;
+    size = l.size;
+    return *this;
+}
+
+LaserScannerDriver::LaserScannerDriver(LaserScannerDriver &&l)
+        : head{l.head}, tail{l.tail}, size{l.size}, buffer{l.buffer} {
+    l.head = 0;
+    l.tail = 0;
+    l.size = 0;
+    l.buffer = nullptr;
+}
+
+LaserScannerDriver &LaserScannerDriver::operator=(LaserScannerDriver &&l) {
+    delete[] buffer;
+    buffer = l.buffer;
+    head = l.head;
+    tail = l.tail;
+    size = l.size;
+    l.buffer = nullptr;
+    l.head = 0;
+    l.tail = 0;
+    l.size = 0;
+    return *this;
+}
 
 
 

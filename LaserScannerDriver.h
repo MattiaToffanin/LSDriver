@@ -1,5 +1,6 @@
 #include <vector>
 #include <ostream>
+#include <cmath>
 
 
 class Scan {
@@ -9,9 +10,10 @@ private:
     double angle_resolution;
 
 public:
-    Scan() : scan{nullptr}, length{0}, angle_resolution{0} {};
-
-    Scan(double AngleResolution);
+    explicit Scan(double AngleResolution = 1)
+            : scan{nullptr}, angle_resolution{AngleResolution} {
+        length = std::floor(180 / AngleResolution) + 1;
+    };
 
     void insert_vector(const std::vector<double> &v);
 
@@ -47,7 +49,7 @@ public:
     //Assegnamento di spostamento
     Scan &operator=(Scan &&s);
 
-    virtual ~Scan();
+    ~Scan();
 
 };
 
@@ -83,7 +85,19 @@ public:
 
     double get_distance(double angle) const;
 
-    //~LaserScannerDriver();
+    //Costruttore di copia
+    LaserScannerDriver(const LaserScannerDriver &l);
+
+    //Assegnamento di copia
+    LaserScannerDriver &operator=(const LaserScannerDriver &l);
+
+    //Costruttore di spostamento
+    LaserScannerDriver(LaserScannerDriver &&l);
+
+    //Assegnamento di spostamento
+    LaserScannerDriver &operator=(LaserScannerDriver &&l);
+
+    ~LaserScannerDriver();
 
     class EmptyBuffer {
     };
