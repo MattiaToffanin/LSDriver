@@ -5,7 +5,6 @@
 
 class LaserScannerDriver {
 private:
-    double angle_resolution;
     int head;
     int tail;
     int size;
@@ -20,7 +19,7 @@ private:
         return n - 1;
     }
 
-    const Scan &get_last() const;
+    Scan &get_last_scan() const;
 
 
 public:
@@ -33,7 +32,7 @@ public:
 
     void clear_buffer();
 
-    const double get_distance(const double angle) const;
+    double get_distance(const double angle) const;
 
     //~LaserScannerDriver();
 

@@ -5,6 +5,7 @@ class Scan {
 private:
     double *scan;
     int length;
+    double angle_resolution;
 
 public:
     Scan() {};
@@ -23,6 +24,9 @@ public:
 
     const int get_length() const { return length; }
 
+    double get_angle_resolution() const;
+
+    double get_distance_from_angle(const double angle) const;
 
     class ScanNotValid {
     };
