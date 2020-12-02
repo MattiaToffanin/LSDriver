@@ -51,6 +51,7 @@ public:
 
     ~Scan();
 
+    void print() const;
 };
 
 
@@ -105,6 +106,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const LaserScannerDriver &driver);
 
+    void print() const;
 
 };
 

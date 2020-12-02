@@ -158,6 +158,16 @@ Scan::~Scan() {
     angle_resolution = 0;
 }
 
+void Scan::print() const {
+    cout << "[";
+    for (int i = 0; i < length; ++i) {
+        cout << angle_resolution * i << ": " << scan[i];
+        if (i != length - 1)
+            cout << ", ";
+    }
+    cout << "]" << endl;
+}
+
 
 LaserScannerDriver::~LaserScannerDriver() {
     delete[] buffer;
@@ -208,6 +218,13 @@ LaserScannerDriver &LaserScannerDriver::operator=(LaserScannerDriver &&l) {
     l.tail = 0;
     l.size = 0;
     return *this;
+}
+
+void LaserScannerDriver::print() const {
+    cout << "head: " << head << ", tail: " << tail << ", size: " << size << endl;
+    for (int i = 0; i < BUFFER_DIM; ++i) {
+        buffer[i].print();
+    }
 }
 
 
