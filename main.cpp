@@ -15,7 +15,6 @@ void print(const vector<double> &v) {
 
 
 int main() {
-
     Scan s1 = Scan();
     s1.insert_vector({32423,3,4,5});
 
