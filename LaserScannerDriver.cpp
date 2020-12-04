@@ -98,6 +98,8 @@ double LaserScannerDriver::get_distance(double angle) const {
 double Scan::get_distance_from_angle(double angle) const {
     if (angle >= 180)
         return scan[length - 1]; //Se angle > 180 restituisco utlimo elemento
+    if (angle <= 0)
+        return scan[0];
     int min = round(angle / angle_resolution);
     return scan[min];
 }
