@@ -1,3 +1,7 @@
+/**
+ * @author MATTIA TOFFANIN
+ */
+
 #include <vector>
 #include <iostream>
 #include <cmath>

@@ -1,9 +1,11 @@
+/**
+ * @author MATTIA TOFFANIN
+ */
+
 #include <ostream>
 #include <vector>
 #include <cmath>
 #include "LaserScannerDriver.h"
-
-
 
 LaserScannerDriver::LaserScannerDriver(double angleResolution) //Inizializzo le variabili membro
         : buffer{new Scan[BUFFER_DIM]}, head{0}, tail{0}, size{0} {

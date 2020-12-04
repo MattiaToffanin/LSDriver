@@ -1,3 +1,7 @@
+/**
+ * @author MATTIA TOFFANIN
+ */
+
 #include <iostream>
 #include <vector>
 #include "LaserScannerDriver.h"
