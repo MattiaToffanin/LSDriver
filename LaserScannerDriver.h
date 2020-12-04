@@ -1,5 +1,5 @@
 #include <vector>
-#include <ostream>
+#include <iostream>
 #include <cmath>
 
 /**
@@ -117,9 +117,9 @@ public:
     class ScanNotValid {
     };
 
-    friend std::ostream &operator<<(std::ostream &os, const Scan &scan);
 };
 
+std::ostream &operator<<(std::ostream &os, const Scan &scan);
 
 /**
  * Classe per gestire un buffer circolare di scansioni
@@ -160,17 +160,11 @@ private:
         return n - 1;
     }
 
-    /**
-     * Funzione membro privata per ricevere l'ultima scansione inserita senza rimuoverla dal buffer
-     * @return ultima scansione inserita
-     */
-    Scan get_last_scan() const;
-
 public:
 
     /**
      * Costruttore
-     * @param angleResolution: risoluzione angolare del LS
+     * @param angleResolution: risoluzione angolare del LS da 0.1 a 1
      */
     explicit LaserScannerDriver(double angleResolution = 1);
 
@@ -213,6 +207,7 @@ public:
 
     /**
      * Funzione membro per ricevere e rimuovere dal buffer la scansione più vecchia
+     * Non si può chiamare se buffer vuoto
      * @return vettore rappresentante la scansione più vecchia
      */
     std::vector<double> get_scan();
@@ -230,6 +225,12 @@ public:
     double get_distance(double angle) const;
 
     /**
+     * Funzione membro per ricevere l'ultima scansione inserita senza rimuoverla dal buffer
+     * @return ultima scansione inserita
+     */
+    Scan get_last_scan() const;
+
+    /**
      * Funzione membro di debug per stampare lo stato del LSA (comprese tutte le scansiioni all'interno)
      */
     void print() const;
@@ -240,9 +241,14 @@ public:
     class EmptyBuffer {
     };
 
-    friend std::ostream &operator<<(std::ostream &os, const LaserScannerDriver &driver);
+    /**
+     * Classe interna per eccezione
+     */
+    class AngleResolutionNotValid {
+    };
 
 };
 
+std::ostream &operator<<(std::ostream &os, const LaserScannerDriver &driver);
 
 

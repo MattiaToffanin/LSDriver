@@ -18,7 +18,7 @@ void print(const vector<double> &v) {
 vector<double> createRandomVector(const double angleResolution = 1) {
     vector<double> v;
     for (int i = 0; i < (180 / angleResolution) + 1; ++i)
-        v.push_back(random());
+        v.push_back(rand());
     return v;
 }
 
@@ -32,21 +32,23 @@ LaserScannerDriver createLaserScannerDriver(const double angleResolution = 1) {
 
 int main() {
 
-    LaserScannerDriver l1 = LaserScannerDriver();
+    double al1 = 0.7;
+    double al2 = 0.2;
+    LaserScannerDriver l1 = LaserScannerDriver(al1);
 
     cout << "l1: ";
     l1.print();
 
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << endl << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
     cout << endl << "l1: ";
     l1.print();
 
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << endl << "Newer scan of l1 " << l1;
 
     cout << endl << "l1: ";
@@ -63,9 +65,9 @@ int main() {
     cout << endl << "l1 cleaned: ";
     l1.print();
 
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << endl << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
     cout << endl << "l1: ";
     l1.print();
@@ -80,7 +82,7 @@ int main() {
     angle = -2;
     cout << "Distance of " << angle << " in newer scan: " << l1.get_distance(angle) << endl;
 
-    LaserScannerDriver l2 = createLaserScannerDriver(19.67);
+    LaserScannerDriver l2 = createLaserScannerDriver(0.23);
     cout << endl << "l2: ";
     l2.print();
 
@@ -90,22 +92,22 @@ int main() {
     cout << "l2 = l1: ";
     l2.print();
 
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << endl << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
-    l2.new_scan(createRandomVector());
-    cout << "Newer scan of l2 " << l1;
-    l2.new_scan(createRandomVector());
-    cout << "Newer scan of l2 " << l1;
-    l2.new_scan(createRandomVector());
-    cout << "Newer scan of l2 " << l1;
-    l2.new_scan(createRandomVector());
-    cout << "Newer scan of l2 " << l1;
-    l2.new_scan(createRandomVector());
-    cout << "Newer scan of l2 " << l1;
+    l2.new_scan(createRandomVector(al2));
+    cout << "Newer scan of l2 " << l2;
+    l2.new_scan(createRandomVector(al2));
+    cout << "Newer scan of l2 " << l2;
+    l2.new_scan(createRandomVector(al2));
+    cout << "Newer scan of l2 " << l2;
+    l2.new_scan(createRandomVector(al2));
+    cout << "Newer scan of l2 " << l2;
+    l2.new_scan(createRandomVector(al2));
+    cout << "Newer scan of l2 " << l2;
     cout << endl << "l1: ";
     l1.print();
     cout << "l2 != l1: ";
@@ -132,31 +134,35 @@ int main() {
     print(l1.get_scan());
     cout << "Older scan of l2 ";
     print(l2.get_scan());
+    cout << "Older scan of l2 ";
+    print(l2.get_scan());
     cout << endl << "l1: ";
     l1.print();
     cout << "l2 != l1: ";
     l2.print();
 
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << endl << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
-    l1.new_scan(createRandomVector());
+    l1.new_scan(createRandomVector(al1));
     cout << "Newer scan of l1 " << l1;
-    l2.new_scan(createRandomVector());
+    l2.new_scan(createRandomVector(al2));
     cout << "Newer scan of l2 " << l2;
-    l2.new_scan(createRandomVector());
+    l2.new_scan(createRandomVector(al2));
     cout << "Newer scan of l2 " << l2;
-    l2.new_scan(createRandomVector());
+    l2.new_scan(createRandomVector(al2));
     cout << "Newer scan of l2 " << l2;
-    l2.new_scan(createRandomVector());
+    l2.new_scan(createRandomVector(al2));
     cout << "Newer scan of l2 " << l2;
-    l2.new_scan(createRandomVector());
+    l2.new_scan(createRandomVector(al2));
     cout << "Newer scan of l2 " << l2;
     cout << endl << "l1: ";
     l1.print();
     cout << "l2 != l1: ";
     l2.print();
+
+    cout << rand();
 
     return 0;
 }
