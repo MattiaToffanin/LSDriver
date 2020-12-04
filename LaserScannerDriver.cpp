@@ -96,75 +96,15 @@ double LaserScannerDriver::get_distance(double angle) const {
 }
 
 double Scan::get_distance_from_angle(double angle) const {
-    int min = 0;
-    for (int i = 0; i < length; ++i)
-        if (abs(angle - i * angle_resolution) < abs(angle - min * angle_resolution))
-            min = i; //Cerco l'indice con la minima distanza tra angolo cercato e angoli della scansione
+    if (angle >= 180)
+        return scan[length - 1]; //Se angle > 180 restituisco utlimo elemento
+    int min = round(angle / angle_resolution);
     return scan[min];
 }
 
-Scan::Scan(const Scan &s)
-        : length{s.length}, angle_resolution{s.angle_resolution}, scan{new double[s.length]} {
-    copy(s.scan, s.scan + s.length, scan); //Copio s.scan in s
-}
-
-Scan &Scan::operator=(const Scan &s) {
-    double *temp = new double[s.length];
-    copy(s.scan, s.scan + s.length, temp); //Copio s.scan in s
-    delete[] scan;
-    scan = temp;
-    length = s.length;
-    angle_resolution = s.angle_resolution;
-    return *this;
-}
-
-
-Scan::Scan(Scan &&s)
-        : length{s.length}, angle_resolution{s.angle_resolution}, scan{s.scan} {
-    s.length = 0;
-    s.angle_resolution = 0;
-    s.scan = nullptr;
-}
-
-Scan &Scan::operator=(Scan &&s) {
-    delete[] scan;
-    scan = s.scan;
-    length = s.length;
-    angle_resolution = s.angle_resolution;
-    s.scan = nullptr;
-    s.length = 0;
-    s.angle_resolution = 0;
-    return *this;
-}
-
-Scan::~Scan() {
-    delete[] scan;
-    scan = nullptr;
-    length = 0;
-    angle_resolution = 0;
-}
-
-void Scan::print() const {
-    cout << "length: " << length << ", angle resolution: " << angle_resolution << " [";
-    for (int i = 0; i < length; ++i) {
-        cout << angle_resolution * i << ": " << scan[i];
-        if (i != length - 1)
-            cout << ", ";
-    }
-    cout << "]" << endl;
-}
-
-
-LaserScannerDriver::~LaserScannerDriver() {
-    delete[] buffer;
-    buffer = nullptr;
-    head = 0;
-    tail = 0;
-    size = 0;
-}
-
 LaserScannerDriver::LaserScannerDriver(const LaserScannerDriver &l)
-        : head{l.head}, tail{l.tail}, size{l.size}, buffer{new Scan[BUFFER_DIM]} {
+        : head{l.head}, tail{l.tail}, size{l.size}, buffer{new Scan[BUFFER_DIM]} { //Copio variabili membro
+    //copy(l.buffer, l.buffer + BUFFER_DIM, buffer); //std::copy chiama l'operatore = per ogni scansione nel buffer
     for (int i = 0; i < BUFFER_DIM; ++i) {
         buffer[i] = l.buffer[i];
     }
@@ -173,42 +113,109 @@ LaserScannerDriver::LaserScannerDriver(const LaserScannerDriver &l)
 LaserScannerDriver &LaserScannerDriver::operator=(const LaserScannerDriver &l) {
     Scan *temp = new Scan[BUFFER_DIM];
     for (int i = 0; i < BUFFER_DIM; ++i) {
-        buffer[i] = l.buffer[i];
+        temp[i] = l.buffer[i];
     }
-    delete[] buffer;
-    buffer = temp;
-    head = l.head;
+    //copy(l.buffer, l.buffer + BUFFER_DIM, temp); //std::copy chiama l'operatore = per ogni scansione nel buffer
+    delete[] buffer; //Dealloco buffer "vecchio"
+    buffer = temp; //buffer punta a temp
+    head = l.head;//Copio altre varaiabili membro
     tail = l.tail;
     size = l.size;
     return *this;
 }
 
 LaserScannerDriver::LaserScannerDriver(LaserScannerDriver &&l)
-        : head{l.head}, tail{l.tail}, size{l.size}, buffer{l.buffer} {
-    l.head = 0;
+        : head{l.head}, tail{l.tail}, size{l.size},
+          buffer{l.buffer} { //Copio variabili membro (shallow copy per buffer)
+    l.head = 0; //Annullo l
     l.tail = 0;
     l.size = 0;
     l.buffer = nullptr;
 }
 
 LaserScannerDriver &LaserScannerDriver::operator=(LaserScannerDriver &&l) {
-    delete[] buffer;
-    buffer = l.buffer;
+    delete[] buffer; //Dealloco buffer "vecchio"
+    buffer = l.buffer; //Copio variabili membro (shallow copy per buffer)
     head = l.head;
     tail = l.tail;
     size = l.size;
-    l.buffer = nullptr;
+    l.buffer = nullptr; //Annullo l
     l.head = 0;
     l.tail = 0;
     l.size = 0;
     return *this;
 }
 
+Scan::Scan(const Scan &s)
+        : length{s.length}, angle_resolution{s.angle_resolution}, scan{new double[s.length]} { //Copio variabili membro
+    copy(s.scan, s.scan + s.length, scan); //Copio s.scan in this.scan
+}
+
+Scan &Scan::operator=(const Scan &s) {
+    double *temp = new double[s.length];
+    if (s.scan)
+        copy(s.scan, s.scan + s.length, temp); //Copio s.scan in temp
+    else
+        temp = nullptr;
+    delete[] scan; //Dealloco scan "vecchio"
+    scan = temp; //scan punta a temp
+    length = s.length; //Copio altre variabili membro
+    angle_resolution = s.angle_resolution;
+    return *this;
+}
+
+Scan::Scan(Scan &&s)
+        : length{s.length}, angle_resolution{s.angle_resolution},
+          scan{s.scan} { //Copio variabili membro (shallow copy per scan)
+    s.length = 0; //Annullo s
+    s.angle_resolution = 0;
+    s.scan = nullptr;
+}
+
+Scan &Scan::operator=(Scan &&s) {
+    delete[] scan; //Dealloco scan "vecchio"
+    scan = s.scan; //Copio variabili membro (shallow copy per scan)
+    length = s.length;
+    angle_resolution = s.angle_resolution;
+    s.scan = nullptr; //Annullo s
+    s.length = 0;
+    s.angle_resolution = 0;
+    return *this;
+}
+
+LaserScannerDriver::~LaserScannerDriver() {
+    delete[] buffer; //Dealloco buffer
+    buffer = nullptr; //Annullo variabili membro
+    head = 0;
+    tail = 0;
+    size = 0;
+}
+
+Scan::~Scan() {
+    delete[] scan; //Dealloco scan
+    scan = nullptr; //Annullo variabili membro
+    length = 0;
+    angle_resolution = 0;
+}
+
+void Scan::print() const {
+    cout << "length: " << length << ", angle resolution: " << angle_resolution << " [";
+    if (scan) {
+        for (int i = 0; i < length; ++i) {
+            cout << angle_resolution * i << ": " << scan[i];
+            if (i != length - 1)
+                cout << ", ";
+        }
+    } else cout << "Nullptr";
+    cout << "]" << endl;
+}
+
+
 void LaserScannerDriver::print() const {
     cout << "head: " << head << ", tail: " << tail << ", size: " << size << endl;
-    for (int i = 0; i < BUFFER_DIM; ++i) {
-        buffer[i].print();
-    }
+    for (int i = 0; i < BUFFER_DIM; ++i)
+        if (buffer[i].is_valid())
+            buffer[i].print();
 }
 
 
