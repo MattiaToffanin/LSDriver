@@ -1,5 +1,5 @@
 /**
- * @author MATTIA TOFFANIN
+ * @author MATTIA TOFFANIN 1219608
  */
 
 #include <ostream>
@@ -219,6 +219,3 @@ void LaserScannerDriver::print() const {
         else
             std::cout << "Nullptr" << std::endl;
 }
-
-
-
